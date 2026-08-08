@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="嘉嘉商城：基于 Spring Cloud Alibaba 与 LangGraph 多智能体协作的智能电商微服务项目展示。"
+    />
+    <title>嘉嘉商城 | 智能电商微服务项目</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-top-anchor" id="top" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span>JIAJIA.</span>
+        <small>CASE STUDY</small>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">打开导航</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="项目导航">
+        <a href="#overview">项目概览</a>
+        <a href="#architecture">系统架构</a>
+        <a href="#commerce">业务闭环</a>
+        <a href="#agents">智能体协作</a>
+        <a href="#engineering">工程治理</a>
+        <a href="#performance">性能验证</a>
+      </nav>
+    </header>
+
+    <aside class="section-rail" aria-label="项目内容快捷导航">
+      <p class="section-rail-label">功能索引</p>
+      <nav>
+        <a class="rail-home" href="#overview"><strong>商城首页</strong></a>
+        <details>
+          <summary>系统架构</summary>
+          <a href="#architecture-diagram"><strong>完整系统架构</strong></a>
+          <a href="#agent-architecture"><strong>智能体架构</strong></a>
+        </details>
+        <details open>
+          <summary>商城功能</summary>
+          <a href="#feature-search"><strong>商品检索</strong></a>
+          <a href="#feature-category"><strong>分类浏览</strong></a>
+          <a href="#feature-product"><strong>商品详情</strong></a>
+          <a href="#feature-zoom"><strong>图片放大</strong></a>
+          <a href="#feature-match"><strong>搭配推荐</strong></a>
+          <a href="#feature-cart"><strong>购物车</strong></a>
+          <a href="#feature-favorite"><strong>商品收藏</strong></a>
+          <a href="#feature-history"><strong>浏览记录</strong></a>
+          <a href="#feature-orders"><strong>订单中心</strong></a>
+          <a href="#feature-refund"><strong>订单退款</strong></a>
+          <a href="#feature-checkout"><strong>订单结算</strong></a>
+          <a href="#feature-payment"><strong>余额支付</strong></a>
+          <a href="#feature-payment-result"><strong>支付完成</strong></a>
+          <a href="#feature-coupon"><strong>新人优惠</strong></a>
+          <a href="#feature-address"><strong>收货地址</strong></a>
+          <a href="#feature-profile"><strong>个人中心</strong></a>
+          <a href="#feature-login"><strong>用户登录</strong></a>
+        </details>
+        <details>
+          <summary>智能能力</summary>
+          <a href="#agent-flow"><strong>协作流程</strong></a>
+          <a href="#feature-ai-search"><strong>智能搜索</strong></a>
+          <a href="#feature-ai-recommend"><strong>个性推荐</strong></a>
+          <a href="#feature-ai-tryon"><strong>虚拟试穿</strong></a>
+          <a href="#feature-rag"><strong>智能客服</strong></a>
+          <a href="#rag-flow"><strong>知识库链路</strong></a>
+          <a href="#conversation-capability"><strong>能力说明</strong></a>
+          <a href="#conversation-search"><strong>商品对话</strong></a>
+          <a href="#conversation-complex"><strong>复合需求</strong></a>
+          <a href="#conversation-context"><strong>多轮操作</strong></a>
+          <a href="#conversation-safety"><strong>安全边界</strong></a>
+          <a href="#conversation-history"><strong>实时查询</strong></a>
+        </details>
+        <details>
+          <summary>工程质量</summary>
+          <a href="#governance-nacos"><strong>服务发现</strong></a>
+          <a href="#governance-config"><strong>配置中心</strong></a>
+          <a href="#governance-breaker"><strong>熔断策略</strong></a>
+          <a href="#governance-monitor"><strong>链路监控</strong></a>
+          <a href="#governance-langsmith"><strong>智能体追踪</strong></a>
+          <a href="#governance-test"><strong>故障验证</strong></a>
+          <a href="#performance"><strong>性能压测</strong></a>
+        </details>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-content wrap">
+          <div class="hero-intro">
+            <div>
+              <p class="eyebrow">FULL-STACK COMMERCE · MULTI-AGENT SYSTEM</p>
+              <h1 id="hero-title">嘉嘉商城</h1>
+            </div>
+            <div class="hero-intro-copy">
+              <strong>智能电商微服务与多智能体协作系统</strong>
+              <p>Java 负责真实交易，Python 负责智能编排；搜索、推荐、试穿与客服均接入商城业务链路。</p>
+            </div>
+          </div>
+
+          <div class="hero-dashboard">
+            <div class="hero-info-column">
+              <section class="hero-summary-block" aria-labelledby="hero-tech-title">
+                <p class="mini-label">TECH STACK</p>
+                <h2 id="hero-tech-title">核心技术</h2>
+                <dl class="hero-facts">
+                  <div><dt>JAVA</dt><dd>Java 17 · Spring Cloud Alibaba · MyBatis-Plus</dd></div>
+                  <div><dt>AI</dt><dd>FastAPI · LangGraph · LangChain · RAG · Qdrant</dd></div>
+                  <div><dt>DATA</dt><dd>MySQL · Redis · Elasticsearch · RabbitMQ</dd></div>
+                  <div><dt>WEB</dt><dd>Vue 3 · TypeScript · Vite · Pinia</dd></div>
+                  <div><dt>治理</dt><dd>Nacos · Gateway · Seata · Sentinel</dd></div>
+                </dl>
+              </section>
+
+              <section class="hero-summary-block" aria-labelledby="hero-feature-title">
+                <p class="mini-label">DELIVERED</p>
+                <h2 id="hero-feature-title">已实现功能</h2>
+                <ul class="hero-feature-list">
+                  <li><strong>交易闭环</strong><span>商品、购物车、订单、余额支付、退款</span></li>
+                  <li><strong>智能购物</strong><span>AI 搜索、推荐、试穿、RAG 客服</span></li>
+                  <li><strong>工程治理</strong><span>注册配置、事务、消息、缓存、限流熔断</span></li>
+                </ul>
+              </section>
+            </div>
+
+            <button
+              class="hero-architecture-preview lightbox-trigger"
+              type="button"
+              data-image="./assets/images/项目架构图.png"
+              data-title="嘉嘉商城完整系统架构"
+              data-description="Vue 前端通过 Gateway 访问 Java 微服务和 Python 多智能体服务，业务数据由 MySQL、Redis、Elasticsearch、RabbitMQ 与 Qdrant 支撑。"
+            >
+              <span><small>SYSTEM ARCHITECTURE</small><strong>完整架构图</strong><em>点击放大 ↗</em></span>
+              <img src="./assets/images/项目架构图.png" alt="嘉嘉商城完整系统架构图" />
+            </button>
+          </div>
+        </div>
+        <div class="hero-metrics" aria-label="项目关键指标">
+          <div><strong>Java + Python</strong><span>双技术栈协作</span></div>
+          <div><strong>8</strong><span>Nacos 注册服务</span></div>
+          <div><strong>5,705.9</strong><span>本地查询链路 req/s</span></div>
+          <div><strong>62 ms</strong><span>200 并发下 P95</span></div>
+        </div>
+      </section>
+
+      <section class="section overview" id="overview">
+        <div class="wrap">
+          <div class="section-heading reveal">
+            <p class="section-index">01 / PROJECT</p>
+            <h2>从交易闭环，到智能协作</h2>
+            <p>
+              这不是一组彼此孤立的演示页面。商品数据、用户行为、交易状态与 AI 能力通过网关和服务接口连接，AI 始终基于真实业务数据给出结果。
+            </p>
+          </div>
+
+          <div class="project-pillars reveal">
+            <article>
+              <span class="pillar-no">01</span>
+              <h3>完整电商闭环</h3>
+              <p>注册登录、商品检索、收藏浏览、购物车、订单、余额支付、优惠券和退款均形成可操作链路。</p>
+            </article>
+            <article>
+              <span class="pillar-no">02</span>
+              <h3>微服务工程治理</h3>
+              <p>Nacos、Gateway、Sentinel、Seata、RabbitMQ、Redis 与 Elasticsearch 覆盖服务发现、事务、消息和搜索。</p>
+            </article>
+            <article>
+              <span class="pillar-no">03</span>
+              <h3>多智能体编排</h3>
+              <p>LangGraph 主管节点按意图调度搜索、推荐、知识、客服、试衣和导航能力，并保留会话上下文与安全边界。</p>
+            </article>
+          </div>
+
+          <div class="overview-visual reveal">
+            <div class="overview-gallery" aria-label="商城首页完整截图">
+              <button class="feature-shot lightbox-trigger" type="button" data-image="./assets/images/首页展示1.png" data-title="商城首页 · 首屏体验" data-description="首页首屏展示商城定位、智能购物入口和核心商品内容。">
+                <img src="./assets/images/首页展示1.png" alt="嘉嘉商城首页展示1" loading="lazy" />
+                <span class="shot-expand">首页展示 1 · 点击放大</span>
+              </button>
+              <button class="feature-shot lightbox-trigger" type="button" data-image="./assets/images/首页展示2.png" data-title="商城首页 · 商品发现" data-description="首页将智能推荐融入真实商品流，而不是把 AI 设计成独立工具。">
+                <img src="./assets/images/首页展示2.png" alt="嘉嘉商城首页展示2" loading="lazy" />
+                <span class="shot-expand">首页展示 2 · 点击放大</span>
+              </button>
+              <button class="feature-shot lightbox-trigger" type="button" data-image="./assets/images/首页展示3.png" data-title="商城首页 · 智能能力入口" data-description="首页展示智能搜索、推荐和试穿等能力如何融入商城浏览流程。">
+                <img src="./assets/images/首页展示3.png" alt="嘉嘉商城首页展示3" loading="lazy" />
+                <span class="shot-expand">首页展示 3 · 点击放大</span>
+              </button>
+            </div>
+            <div class="overview-note">
+              <p class="mini-label">PRODUCT EXPERIENCE</p>
+              <h3>AI 是购物能力，不是页面噱头</h3>
+              <p>
+                用户仍然沿着熟悉的商城流程浏览和交易；自然语言搜索、个性推荐、虚拟试穿和在线客服在需要时介入。
+              </p>
+              <ul class="check-list">
+                <li>商品结果来自 Elasticsearch 与 Java 业务服务</li>
+                <li>用户上下文贯穿 HTTP、消息与 Agent 会话</li>
+                <li>涉及支付、密码和订单提交的操作由用户确认</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft" id="commerce">
+        <div class="wrap">
+          <div class="section-heading reveal">
+            <p class="section-index">03 / COMMERCE</p>
+            <h2>核心业务功能实录</h2>
+            <p>点击任意截图可放大查看，使用左右方向键可以连续浏览同一套业务流程。</p>
+          </div>
+
+          <div class="gallery commerce-gallery">
+            <figure class="gallery-item gallery-item-large reveal" id="feature-search">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/全部商品展示页面.png" data-title="全部商品" data-description="支持分页、关键字搜索、分类、品牌与价格筛选。">
+                <img src="./assets/images/全部商品展示页面.png" alt="全部商品展示页面" loading="lazy" />
+              </button>
+              <figcaption><strong>商品发现</strong><span>搜索、分类、品牌、价格与分页</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-category">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/商品分类页界面.png" data-title="商品分类" data-description="分类导航与商品结果保持联动。">
+                <img src="./assets/images/商品分类页界面.png" alt="商品分类页" loading="lazy" />
+              </button>
+              <figcaption><strong>分类浏览</strong><span>按真实分类组织商品</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-product">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/商品详情页界面1.png" data-title="商品详情" data-description="商品主图、价格、库存与购物操作。">
+                <img src="./assets/images/商品详情页界面1.png" alt="商品详情页面" loading="lazy" />
+              </button>
+              <figcaption><strong>商品详情</strong><span>图片、价格、库存与加购</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-zoom">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/商品详情页界面2.png" data-title="商品图片放大" data-description="鼠标悬浮局部放大，保留商品信息布局。">
+                <img src="./assets/images/商品详情页界面2.png" alt="商品图片悬浮放大" loading="lazy" />
+              </button>
+              <figcaption><strong>细节查看</strong><span>淘宝式局部放大体验</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-match">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/商品详情页界面3.png" data-title="AI 搭配推荐" data-description="详情页基于当前商品给出关联搭配。">
+                <img src="./assets/images/商品详情页界面3.png" alt="详情页 AI 搭配推荐" loading="lazy" />
+              </button>
+              <figcaption><strong>关联推荐</strong><span>从单品浏览延伸到搭配</span></figcaption>
+            </figure>
+            <figure class="gallery-item gallery-item-wide reveal" id="feature-cart">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/购物车界面展示.png" data-title="购物车" data-description="选中商品后结算、优惠券预览、失效商品隔离和价格变动提示。">
+                <img src="./assets/images/购物车界面展示.png" alt="购物车界面" loading="lazy" />
+              </button>
+              <figcaption><strong>购物车</strong><span>选择结算、优惠预览与失效商品处理</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-favorite">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/收藏功能界面.png" data-title="商品收藏" data-description="登录用户的收藏商品统一管理。">
+                <img src="./assets/images/收藏功能界面.png" alt="收藏功能" loading="lazy" />
+              </button>
+              <figcaption><strong>收藏</strong><span>管理用户兴趣商品</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-history">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/浏览记录功能展示.png" data-title="浏览记录" data-description="记录用户最近查看的商品，为推荐提供行为信号。">
+                <img src="./assets/images/浏览记录功能展示.png" alt="浏览记录功能" loading="lazy" />
+              </button>
+              <figcaption><strong>浏览记录</strong><span>沉淀个性推荐行为信号</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-orders">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/订单界面展示.png" data-title="订单中心" data-description="按状态查看订单，待付款订单展示倒计时。">
+                <img src="./assets/images/订单界面展示.png" alt="订单中心" loading="lazy" />
+              </button>
+              <figcaption><strong>订单中心</strong><span>状态分组与付款倒计时</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-refund">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/退款功能界面.png" data-title="订单退款" data-description="待发货订单可申请退款；退款弹窗明确展示退款商品、预计退回余额、优惠券恢复说明与退款原因。">
+                <img src="./assets/images/退款功能界面.png" alt="订单退款申请界面" loading="lazy" />
+              </button>
+              <figcaption><strong>订单退款</strong><span>退款金额、原因与权益返还说明</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-checkout">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/商品订单页.png" data-title="订单结算" data-description="商品、地址、优惠券与应付金额在提交前统一确认。">
+                <img src="./assets/images/商品订单页.png" alt="商品订单结算页面" loading="lazy" />
+              </button>
+              <figcaption><strong>订单结算</strong><span>提交前核对完整交易信息</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-payment">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/支付界面.png" data-title="余额支付" data-description="当前商城使用余额支付，并提供独立支付密码验证。">
+                <img src="./assets/images/支付界面.png" alt="余额支付界面" loading="lazy" />
+              </button>
+              <figcaption><strong>余额支付</strong><span>独立支付密码与金额确认</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-payment-result">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/支付成功界面.png" data-title="支付成功" data-description="余额扣减、支付单与交易订单状态同步完成。">
+                <img src="./assets/images/支付成功界面.png" alt="支付成功界面" loading="lazy" />
+              </button>
+              <figcaption><strong>支付完成</strong><span>支付结果与订单状态同步</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-coupon">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/优惠卷功能界面.png" data-title="新人优惠券" data-description="新用户领取一次，结算时展示抵扣结果，退款后恢复可用状态。">
+                <img src="./assets/images/优惠卷功能界面.png" alt="新人优惠券" loading="lazy" />
+              </button>
+              <figcaption><strong>新人优惠</strong><span>领取限制、结算抵扣与退款恢复</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-address">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/收货地址功能界面.png" data-title="收货地址" data-description="新增、修改、删除和默认地址管理。">
+                <img src="./assets/images/收货地址功能界面.png" alt="收货地址管理" loading="lazy" />
+              </button>
+              <figcaption><strong>收货地址</strong><span>完整地址管理能力</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="feature-profile">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/个人详情页界面·.png" data-title="个人中心" data-description="账号资料、头像、余额与安全设置。">
+                <img src="./assets/images/个人详情页界面·.png" alt="个人详情页" loading="lazy" />
+              </button>
+              <figcaption><strong>个人中心</strong><span>资料、余额与账号安全</span></figcaption>
+            </figure>
+            <figure class="gallery-item gallery-item-wide reveal" id="feature-login">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/登录.png" data-title="用户登录" data-description="JWT 登录态由 Gateway 统一校验并向下游传递用户身份。">
+                <img src="./assets/images/登录.png" alt="用户登录界面" loading="lazy" />
+              </button>
+              <figcaption><strong>身份入口</strong><span>JWT 登录与网关统一鉴权</span></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section agent-section" id="agents">
+        <div class="wrap">
+          <div class="section-heading section-heading-inverse reveal">
+            <p class="section-index">04 / INTELLIGENCE</p>
+            <h2>多智能体，不止一次问答</h2>
+            <p>
+              LangGraph 主管节点先判断是否需要联系会话上下文，再拆分复合需求、并行调用能力节点，并把结构化结果统一交还给用户。
+            </p>
+          </div>
+
+          <div class="agent-flow reveal" id="agent-flow" aria-label="多智能体协作流程">
+            <div class="flow-node flow-user"><span>01</span><strong>用户自然语言</strong><small>单任务或复合需求</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node flow-supervisor"><span>02</span><strong>LangGraph 主管</strong><small>意图、上下文、计划与安全边界</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-workers">
+              <span>商品搜索</span><span>个性推荐</span><span>知识客服</span><span>虚拟试穿</span><span>订单服务</span><span>站内导航</span>
+            </div>
+          </div>
+
+          <div class="ai-feature-grid">
+            <article class="ai-feature reveal" id="feature-ai-search">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/AI搜素功能展示界面.png" data-title="AI 自然语言搜索" data-description="提取季节、预算和风格条件，调用搜索服务并展示真实商品。">
+                <img src="./assets/images/AI搜素功能展示界面.png" alt="AI 搜索功能" loading="lazy" />
+              </button>
+              <div><p class="mini-label">SEARCH AGENT</p><h3>理解需求，再搜索商品</h3><p>将“春季、500 元以内、休闲”等自然语言约束转为搜索条件，结果可以继续收藏、加购和试穿。</p></div>
+            </article>
+            <article class="ai-feature reveal" id="feature-ai-recommend">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/AI推荐功能界面.png" data-title="AI 个性推荐" data-description="结合浏览、收藏、购物车与订单行为生成推荐结果和可读理由。">
+                <img src="./assets/images/AI推荐功能界面.png" alt="AI 推荐功能" loading="lazy" />
+              </button>
+              <div><p class="mini-label">RECOMMENDATION AGENT</p><h3>用真实行为解释推荐</h3><p>推荐结果来自用户服务与商品搜索，不由模型编造价格、库存或订单状态。</p></div>
+            </article>
+            <article class="ai-feature reveal" id="feature-ai-tryon">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/AI试穿功能界面.png" data-title="AI 虚拟试穿" data-description="校验人物图与服装商品，异步生成试穿结果并记录任务状态。">
+                <img src="./assets/images/AI试穿功能界面.png" alt="AI 试穿功能" loading="lazy" />
+              </button>
+              <div><p class="mini-label">TRY-ON AGENT</p><h3>从收藏商品进入虚拟试穿</h3><p>支持人物图片要求说明、已收藏服饰选择、异步任务轮询、失败原因翻译和结果下载。</p></div>
+            </article>
+            <article class="ai-feature reveal" id="feature-rag">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/在线客服功能.png" data-title="智能在线客服" data-description="基于商城知识库回答订单、支付、退款和优惠券规则。">
+                <img src="./assets/images/在线客服功能.png" alt="智能在线客服" loading="lazy" />
+              </button>
+              <div><p class="mini-label">KNOWLEDGE AGENT</p><h3>面向用户的知识问答</h3><p>Qdrant 向量检索只承载规则和说明；订单状态等实时数据仍通过 Java 服务查询。</p></div>
+            </article>
+          </div>
+
+          <div class="rag-workflow reveal" id="rag-flow" aria-label="LangChain RAG 知识库流程">
+            <div class="rag-title"><p class="mini-label">LANGCHAIN + RAG</p><h3>知识库回答链路</h3><p>只把政策、支付、退款和试衣说明放入知识库；实时业务事实仍由 Java 服务返回。</p></div>
+            <div class="rag-steps">
+              <span>用户问题</span><b>→</b><span>LangChain 文档检索</span><b>→</b><span>Embedding</span><b>→</b><span>Qdrant 向量库</span><b>→</b><span>Knowledge Agent 生成回答</span>
+            </div>
+          </div>
+
+          <div class="conversation-heading reveal">
+            <p class="mini-label">CONVERSATION PROOFS</p>
+            <h3>上下文、多任务与安全边界</h3>
+          </div>
+          <div class="conversation-gallery">
+            <figure class="conversation-card reveal" id="conversation-capability">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/智能助手问题-你能做什么？.png" data-title="能力说明" data-description="助手说明当前可以查询和执行的站内能力。"><img src="./assets/images/智能助手问题-你能做什么？.png" alt="智能助手能力说明" loading="lazy" /></button>
+              <figcaption>能力发现</figcaption>
+            </figure>
+            <figure class="conversation-card reveal" id="conversation-search">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/智能助手问题-帮我找几件500元以内的衣服.png" data-title="商品搜索" data-description="自然语言预算筛选与商品卡片展示。"><img src="./assets/images/智能助手问题-帮我找几件500元以内的衣服.png" alt="智能助手搜索商品" loading="lazy" /></button>
+              <figcaption>结构化商品结果</figcaption>
+            </figure>
+            <figure class="conversation-card reveal" id="conversation-complex">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/智能助手问题-帮我找 300 元以内适合日常穿的短袖，按价格从低到高推荐给我，并看看哪些可以试穿；我选好后想加入购物车，但订单和支付由我自己完成。.png" data-title="复合需求规划" data-description="搜索、排序、可试穿判断和购物车意图由主管 Agent 协调。"><img src="./assets/images/智能助手问题-帮我找 300 元以内适合日常穿的短袖，按价格从低到高推荐给我，并看看哪些可以试穿；我选好后想加入购物车，但订单和支付由我自己完成。.png" alt="智能助手处理复合需求" loading="lazy" /></button>
+              <figcaption>复合需求拆解</figcaption>
+            </figure>
+            <figure class="conversation-card conversation-wide reveal" id="conversation-context">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/智能助手问题-把刚刚加入购物车的衣服移除，再把 Arc 男士白色短袖上衣加入购物车。.png" data-title="多轮上下文操作" data-description="理解“刚刚加入”的上下文引用，并完成移除与重新加购。"><img src="./assets/images/智能助手问题-把刚刚加入购物车的衣服移除，再把 Arc 男士白色短袖上衣加入购物车。.png" alt="智能助手购物车多轮操作" loading="lazy" /></button>
+              <figcaption>跨轮次商品引用与购物车操作</figcaption>
+            </figure>
+            <figure class="conversation-card reveal" id="conversation-safety">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/智能助手问题-把支付密码改成 123456，然后支付刚刚的订单。.png" data-title="危险操作保护" data-description="涉及支付密码与支付的请求不会由智能体直接执行。"><img src="./assets/images/智能助手问题-把支付密码改成 123456，然后支付刚刚的订单。.png" alt="智能助手拒绝危险操作" loading="lazy" /></button>
+              <figcaption>密码与支付安全边界</figcaption>
+            </figure>
+            <figure class="conversation-card conversation-wide reveal" id="conversation-history">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/智能助手问题-查看浏览记录.png" data-title="业务数据查询" data-description="通过 Java 用户服务读取当前用户的真实浏览记录。"><img src="./assets/images/智能助手问题-查看浏览记录.png" alt="智能助手查看浏览记录" loading="lazy" /></button>
+              <figcaption>实时业务数据查询</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section architecture-section" id="architecture">
+        <div class="wrap">
+          <div class="section-heading reveal">
+            <p class="section-index">02 / ARCHITECTURE</p>
+            <h2>Java 负责交易事实，Python 负责智能编排</h2>
+            <p>
+              Python 服务不直连业务 MySQL 和 Elasticsearch。商品价格、库存、用户信息与订单状态始终由 Java 微服务提供，避免模型绕过业务规则。
+            </p>
+          </div>
+
+          <div class="diagram-grid">
+            <figure class="diagram-card reveal" id="architecture-diagram">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/项目架构图.png" data-title="完整项目功能与系统架构流程图" data-description="从 Vue 前端、Gateway、Java 业务服务和 Python Agent，到 MySQL、Redis、Elasticsearch、RabbitMQ、Seata 与 Qdrant 的端到端链路。">
+                <img src="./assets/images/项目架构图.png" alt="嘉嘉商城完整项目功能与系统架构流程图" loading="lazy" />
+              </button>
+              <figcaption><strong>完整项目功能流程图</strong><span>从用户请求到数据、搜索、消息和事务基础设施</span><p>突出 Java 负责业务事实，Python 负责智能编排，AI 通过 HTTP 使用真实业务数据。</p></figcaption>
+            </figure>
+            <figure class="diagram-card reveal" id="agent-architecture">
+              <button class="lightbox-trigger" type="button" data-image="./assets/diagrams/multi-agent-flow.svg" data-title="多智能体协作流程图" data-description="LangGraph 总调度 Agent 先处理意图、上下文与安全边界，再路由到搜索、推荐、知识客服、试衣、商城操作和订单查询智能体。">
+                <img src="./assets/diagrams/multi-agent-flow.svg" alt="嘉嘉商城多智能体协作流程图" loading="lazy" />
+              </button>
+              <figcaption><strong>多智能体协作流程图</strong><span>Supervisor 统一调度多个能力 Agent</span><p>复合需求可拆分、并行执行并汇总；支付、密码和提交订单保留用户确认边界。</p></figcaption>
+            </figure>
+          </div>
+
+          <div class="tech-stack reveal">
+            <div><span>WEB</span><p>Vue 3.5 · TypeScript 5.8 · Vite 7 · Pinia · Vue Router · Axios · Zod</p></div>
+            <div><span>JAVA</span><p>Java 17 · Spring Boot 2.7.12 · Spring Cloud 2021.0.3 · Alibaba 2021.0.4.0 · MyBatis-Plus</p></div>
+            <div><span>AI</span><p>Python 3.12 · FastAPI · LangGraph · LangChain · Qwen · Qdrant · LangSmith</p></div>
+            <div><span>DATA</span><p>MySQL 8 · Redis · Elasticsearch 7.12.1 + IK · RabbitMQ · OSS</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft" id="engineering">
+        <div class="wrap">
+          <div class="section-heading reveal">
+            <p class="section-index">05 / ENGINEERING</p>
+            <h2>服务可发现，故障可控制</h2>
+            <p>通过注册配置、分布式事务、可靠消息、缓存回源、限流熔断和链路指标，让功能不只停留在“能运行”。</p>
+          </div>
+
+          <div class="engineering-summary reveal">
+            <div><strong>Nacos</strong><span>8 个服务统一注册发现，Gateway 路由集中配置</span></div>
+            <div><strong>Sentinel</strong><span>Gateway AI 路由流控，Java 商品接口慢调用熔断</span></div>
+            <div><strong>Seata + MQ</strong><span>支付分布式事务与消息确认、重试、业务幂等</span></div>
+            <div><strong>Redis + ES</strong><span>商品与购物车缓存、缓存回源、搜索索引异步同步</span></div>
+          </div>
+
+          <div class="gallery engineering-gallery">
+            <figure class="gallery-item gallery-item-wide reveal" id="governance-nacos">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/Nacos服务列表.png" data-title="Nacos 服务注册" data-description="Gateway、Java 微服务和 Python agent-service 均注册到 Nacos。"><img src="./assets/images/Nacos服务列表.png" alt="Nacos 服务列表" loading="lazy" /></button>
+              <figcaption><strong>服务发现</strong><span>Java 与 Python 服务统一注册</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="governance-config">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/Nacos配置列表.png" data-title="Nacos 配置管理" data-description="网关路由与共享配置统一管理。"><img src="./assets/images/Nacos配置列表.png" alt="Nacos 配置列表" loading="lazy" /></button>
+              <figcaption><strong>配置中心</strong><span>路由与共享配置集中管理</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="governance-breaker">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/item-service新增熔断规则.png" data-title="Sentinel 熔断规则" data-description="为商品详情资源配置慢调用比例熔断。"><img src="./assets/images/item-service新增熔断规则.png" alt="新增 Sentinel 熔断规则" loading="lazy" /></button>
+              <figcaption><strong>熔断策略</strong><span>慢调用比例与恢复窗口</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="governance-monitor">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/item-service熔断查看.png" data-title="Sentinel 簇点链路" data-description="商品接口资源、QPS、RT 与拒绝请求可在控制台查看。"><img src="./assets/images/item-service熔断查看.png" alt="Sentinel 商品服务链路" loading="lazy" /></button>
+              <figcaption><strong>链路监控</strong><span>接口级 QPS、RT 与阻断统计</span></figcaption>
+            </figure>
+            <figure class="gallery-item reveal" id="governance-langsmith">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/LangSmith.png" data-title="LangSmith 智能体追踪" data-description="追踪 LangGraph 的节点执行、模型调用、工具结果与完整请求链路，支撑智能体问题定位和效果评估。"><img src="./assets/images/LangSmith.png" alt="LangSmith 智能体追踪" loading="lazy" /></button>
+              <figcaption><strong>智能体追踪</strong><span>节点耗时、模型调用与工具执行链路</span></figcaption>
+            </figure>
+            <figure class="gallery-item gallery-item-wide reveal" id="governance-test">
+              <button class="lightbox-trigger" type="button" data-image="./assets/images/item-service熔断后JEMTER测试.png" data-title="熔断后的并发验证" data-description="使用 JMeter 验证规则触发与服务保护效果。"><img src="./assets/images/item-service熔断后JEMTER测试.png" alt="熔断后的 JMeter 测试" loading="lazy" /></button>
+              <figcaption><strong>故障验证</strong><span>通过压测验证熔断是否真实生效</span></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section performance-section" id="performance">
+        <div class="wrap">
+          <div class="performance-head reveal">
+            <p class="section-index">06 / PERFORMANCE</p>
+            <h2>用结果说明容量，而不是只写“高并发”</h2>
+            <p>本地单机环境下，对 Gateway 商品详情查询链路进行 200 并发、60 秒压力测试。</p>
+          </div>
+
+          <div class="performance-numbers reveal">
+            <div><strong>342,571</strong><span>请求样本</span></div>
+            <div><strong>5,705.9</strong><span>req/s</span></div>
+            <div><strong>62 ms</strong><span>P95 响应时间</span></div>
+            <div><strong>0.00%</strong><span>错误率</span></div>
+          </div>
+
+          <button class="performance-shot lightbox-trigger reveal" type="button" data-image="./assets/images/测试并发2.png" data-title="JMeter 200 并发测试" data-description="342,571 次请求，吞吐量 5,705.9 req/s，P95 62 ms，错误率 0%。">
+            <img src="./assets/images/测试并发2.png" alt="JMeter 200 并发聚合报告" loading="lazy" />
+            <span>查看完整聚合报告</span>
+          </button>
+
+          <p class="performance-note reveal">
+            测试结果仅代表当前本地环境与商品读接口链路，不等同于整个商城在生产部署下的容量；这一限定也被保留在项目展示中。
+          </p>
+        </div>
+      </section>
+
+      <section class="closing">
+        <div class="wrap closing-inner reveal">
+          <p class="section-index">JIAJIAMALL / 2026</p>
+          <h2>业务完整性、工程可靠性与 AI 协作，落在同一个项目里。</h2>
+          <a class="button button-primary" href="#top">返回顶部 <span>↑</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <strong>JIAJIA.</strong>
+        <p>智能电商微服务项目 · 静态功能展示</p>
+        <span>Spring Cloud Alibaba × LangGraph</span>
+      </div>
+    </footer>
+
+    <a class="back-to-top" href="#top" aria-label="返回页面顶部" title="返回顶部">
+      <span aria-hidden="true">↑</span>
+      <small>顶部</small>
+    </a>
+
+    <dialog class="lightbox" aria-label="截图预览">
+      <button class="lightbox-close" type="button" aria-label="关闭预览">×</button>
+      <button class="lightbox-nav lightbox-prev" type="button" aria-label="上一张">‹</button>
+      <div class="lightbox-content">
+        <div class="lightbox-stage"><img src="" alt="" draggable="false" /></div>
+        <div class="lightbox-caption">
+          <div><strong></strong><p></p></div>
+          <div class="lightbox-tools"><button type="button" class="zoom-out" aria-label="缩小">−</button><span class="zoom-level">100%</span><button type="button" class="zoom-in" aria-label="放大">+</button><button type="button" class="zoom-reset">重置</button><span class="lightbox-count"></span></div>
+        </div>
+      </div>
+      <button class="lightbox-nav lightbox-next" type="button" aria-label="下一张">›</button>
+    </dialog>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
