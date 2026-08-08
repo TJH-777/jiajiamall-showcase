@@ -52,48 +52,16 @@ railGroups.forEach((group) => {
   });
 });
 
-const cancelRailCorrection = () => {
-  railCorrectionToken += 1;
-};
-
-window.addEventListener('wheel', cancelRailCorrection, { passive: true });
-window.addEventListener('touchstart', cancelRailCorrection, { passive: true });
-window.addEventListener('pointerdown', cancelRailCorrection, { passive: true });
-window.addEventListener('keydown', (event) => {
-  if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) {
-    cancelRailCorrection();
-  }
-});
-
 const scrollToTarget = (target, behavior = 'smooth') => {
   const top = target.getBoundingClientRect().top + window.scrollY - header.offsetHeight - 24;
   window.scrollTo({ top: Math.max(0, top), behavior });
 };
 
-let railCorrectionToken = 0;
-
 backToTop.addEventListener('click', (event) => {
   event.preventDefault();
-  railCorrectionToken += 1;
   history.pushState(null, '', '#top');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  window.setTimeout(() => window.scrollTo({ top: 0, behavior: 'auto' }), 900);
 });
-
-const settleRailTarget = (hash, target) => {
-  const token = ++railCorrectionToken;
-  let attempts = 0;
-
-  const correctPosition = () => {
-    if (token !== railCorrectionToken || window.location.hash !== hash) return;
-    scrollToTarget(target, 'auto');
-    setActiveDetail(target.id);
-    attempts += 1;
-    if (attempts < 20) window.setTimeout(correctPosition, 400);
-  };
-
-  window.setTimeout(correctPosition, 500);
-};
 
 railLinks.forEach((link) => {
   link.addEventListener('click', (event) => {
@@ -104,8 +72,6 @@ railLinks.forEach((link) => {
     history.pushState(null, '', hash);
     setActiveDetail(target.id);
     scrollToTarget(target);
-    // Lazy screenshots above a deep target can keep changing the document height for several seconds.
-    settleRailTarget(hash, target);
   });
 });
 
