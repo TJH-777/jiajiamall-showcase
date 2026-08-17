@@ -133,6 +133,24 @@ let activeImageIndex = 0;
 let imageZoom = 1;
 let imageOffset = { x: 0, y: 0 };
 let dragState = null;
+const activePointers = new Map();
+let pinchState = null;
+
+const fitImageToStage = () => {
+  if (!lightboxImage.naturalWidth || !lightboxImage.naturalHeight) return;
+  const stageRect = lightboxStage.getBoundingClientRect();
+  const availableWidth = Math.max(1, stageRect.width - 20);
+  const availableHeight = Math.max(1, stageRect.height - 20);
+  const ratio = lightboxImage.naturalWidth / lightboxImage.naturalHeight;
+  let width = availableWidth;
+  let height = width / ratio;
+  if (height > availableHeight) {
+    height = availableHeight;
+    width = height * ratio;
+  }
+  lightboxImage.style.width = `${Math.round(width)}px`;
+  lightboxImage.style.height = `${Math.round(height)}px`;
+};
 
 const clampPan = () => {
   const stageRect = lightboxStage.getBoundingClientRect();
@@ -170,6 +188,10 @@ const openLightbox = (index) => {
   renderLightbox(index);
   document.body.classList.add('modal-open');
   lightbox.showModal();
+  requestAnimationFrame(() => {
+    fitImageToStage();
+    renderZoom();
+  });
 };
 
 const closeLightbox = () => {
@@ -204,26 +226,56 @@ zoomReset.addEventListener('click', () => {
   renderZoom();
 });
 
-lightboxImage.addEventListener('wheel', (event) => {
-  event.preventDefault();
-  const delta = event.deltaY < 0 ? 0.1 : -0.1;
+const changeZoom = (delta) => {
   imageZoom = Math.min(3, Math.max(1, Number((imageZoom + delta).toFixed(2))));
+  if (imageZoom === 1) imageOffset = { x: 0, y: 0 };
   renderZoom();
+};
+
+lightboxStage.addEventListener('wheel', (event) => {
+  event.preventDefault();
+  changeZoom(event.deltaY < 0 ? 0.1 : -0.1);
 }, { passive: false });
 
-lightboxImage.addEventListener('dblclick', () => {
+lightboxStage.addEventListener('dblclick', () => {
   imageZoom = imageZoom === 1 ? 1.75 : 1;
   if (imageZoom === 1) imageOffset = { x: 0, y: 0 };
   renderZoom();
 });
 
-lightboxImage.addEventListener('load', renderZoom);
+lightboxImage.addEventListener('load', () => {
+  fitImageToStage();
+  renderZoom();
+});
+
+window.addEventListener('resize', () => {
+  if (!lightbox.open) return;
+  fitImageToStage();
+  renderZoom();
+});
 
 const startDragging = (event) => {
   if (!lightbox.open || (event.pointerType === 'mouse' && event.button !== 0)) return;
   event.preventDefault();
-  // A direct drag starts a comfortable inspection zoom so the user can explore a region immediately.
-  if (imageZoom <= 1) imageZoom = 1.25;
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+  try {
+    lightboxStage.setPointerCapture(event.pointerId);
+  } catch (_) {
+    // Pointer capture is not available in every browser.
+  }
+  if (activePointers.size === 2) {
+    const [first, second] = [...activePointers.values()];
+    pinchState = {
+      distance: Math.hypot(second.x - first.x, second.y - first.y),
+      zoom: imageZoom,
+    };
+    dragState = null;
+    lightboxStage.classList.add('is-dragging');
+    return;
+  }
+  if (activePointers.size > 2) return;
+  // A direct drag starts at an inspection zoom large enough to make panning visible.
+  if (imageZoom <= 1) imageZoom = 2.25;
   renderZoom();
   dragState = {
     startX: event.clientX,
@@ -233,16 +285,23 @@ const startDragging = (event) => {
     pointerId: event.pointerId,
   };
   lightboxStage.classList.add('is-dragging');
-  try {
-    lightboxImage.setPointerCapture(event.pointerId);
-  } catch (_) {
-    // Pointer capture is not available in every browser; global listeners below provide a fallback.
-  }
 };
 
 const dragImage = (event) => {
-  if (!dragState || event.pointerId !== dragState.pointerId) return;
+  if (!activePointers.has(event.pointerId)) return;
   event.preventDefault();
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+  if (pinchState && activePointers.size >= 2) {
+    const [first, second] = [...activePointers.values()];
+    const distance = Math.hypot(second.x - first.x, second.y - first.y);
+    if (pinchState.distance > 0) {
+      imageZoom = Math.min(3, Math.max(1, Number((pinchState.zoom * distance / pinchState.distance).toFixed(2))));
+      if (imageZoom === 1) imageOffset = { x: 0, y: 0 };
+      renderZoom();
+    }
+    return;
+  }
+  if (!dragState || event.pointerId !== dragState.pointerId) return;
   imageOffset = {
     x: dragState.offsetX + event.clientX - dragState.startX,
     y: dragState.offsetY + event.clientY - dragState.startY,
@@ -251,23 +310,23 @@ const dragImage = (event) => {
 };
 
 const stopDragging = (event) => {
-  if (!dragState || (event && event.pointerId !== dragState.pointerId)) return;
-  dragState = null;
-  lightboxStage.classList.remove('is-dragging');
-  if (event) {
-    try {
-      if (lightboxImage.hasPointerCapture(event.pointerId)) lightboxImage.releasePointerCapture(event.pointerId);
-    } catch (_) {
-      // The browser may already have released the pointer.
-    }
+  if (!event || !activePointers.has(event.pointerId)) return;
+  activePointers.delete(event.pointerId);
+  if (dragState?.pointerId === event.pointerId) dragState = null;
+  if (activePointers.size < 2) pinchState = null;
+  if (activePointers.size === 0) lightboxStage.classList.remove('is-dragging');
+  try {
+    if (lightboxStage.hasPointerCapture(event.pointerId)) lightboxStage.releasePointerCapture(event.pointerId);
+  } catch (_) {
+    // The browser may already have released the pointer.
   }
 };
 
 lightboxImage.addEventListener('dragstart', (event) => event.preventDefault());
-lightboxImage.addEventListener('pointerdown', startDragging);
-window.addEventListener('pointermove', dragImage, { passive: false });
-window.addEventListener('pointerup', stopDragging);
-window.addEventListener('pointercancel', stopDragging);
+lightboxStage.addEventListener('pointerdown', startDragging);
+lightboxStage.addEventListener('pointermove', dragImage, { passive: false });
+lightboxStage.addEventListener('pointerup', stopDragging);
+lightboxStage.addEventListener('pointercancel', stopDragging);
 
 lightbox.addEventListener('click', (event) => {
   if (event.target === lightbox) closeLightbox();
